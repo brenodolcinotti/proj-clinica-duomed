@@ -1,0 +1,20 @@
+ O volume na unidade C ‚ Windows
+ O N£mero de S‚rie do Volume ‚ F00E-5AD9
+
+ Pasta de C:\Users\51126353809\proj-clinica-duomed\front
+
+20/08/2026  19:58    <DIR>          .
+20/08/2026  19:49    <DIR>          ..
+20/08/2026  19:52    <DIR>          .expo
+13/08/2026  22:52               440 .gitignore
+13/08/2026  22:52             3.313 App.js
+13/08/2026  22:52               648 app.json
+20/08/2026  19:52    <DIR>          assets
+13/08/2026  22:52             1.764 CLAUDE.md
+13/08/2026  22:52               307 index.js
+13/08/2026  22:52           369.639 package-lock.json
+13/08/2026  22:52               597 package.json
+20/08/2026  19:52    <DIR>          src
+20/08/2026  19:58                 0 teste.txt
+               8 arquivo(s)        376.708 bytes
+               5 pasta(s)   552.792.875.008 bytes dispon¡veis
