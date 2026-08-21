@@ -1,34 +1,49 @@
 import React from 'react';
-import MedicoForm from '../../components/MedicoForm'; // Ajuste o caminho
-import { View } from 'react-native';
-import { useRoute } from '@react-navigation/native'; // Hook do React Navigation
+import { View, StyleSheet } from 'react-native';
+// Certifique-se de que o caminho do import do formulário está correto no seu projeto
+import MedicoForm from '../../components/MedicoForm'; 
 
-const CadastroEdicaoMedicoScreen = ({ route, navigation }) => {
-  // A prop 'medico' virá via route.params
-  const { medico } = route.params || {};
+// IMPORTANTE: Mantenha o mesmo IP usado nos arquivos anteriores
+const BASE_URL = 'http://SEU_IP_AQUI:3000'; 
 
-  const handleSave = (novoDadosMedico) => {
-    // Aqui é onde você faria a chamada de API ou atualizaria o estado global
-    console.log('Dados a serem salvos/editados:', novoDadosMedico);
-    
-    // Supondo que você use uma função de contexto ou Redux para atualizar o estado
-    // Aqui, apenas chamamos o goBack() após o alerta no MedicoForm.js
-  };
+export default function CadastroEdicaoMedicoScreen({ route, navigation }) {
+  // Verifica se a tela recebeu um médico por parâmetro (ou seja, modo de Edição)
+  const medico = route.params?.medico;
 
-  const handleCancel = () => {
-    navigation.goBack();
+  // Função assíncrona para gravar na API
+  const handleSave = async (dados) => {
+    const isEdicao = !!medico;
+    const url = isEdicao ? `${BASE_URL}/medicos/${medico.id}` : `${BASE_URL}/medicos`;
+    const method = isEdicao ? 'PUT' : 'POST';
+
+    const resposta = await fetch(url, {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(dados)
+    });
+
+    if (!resposta.ok) {
+      throw new Error('Falha ao salvar os dados no servidor.');
+    }
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <MedicoForm
-        medico={medico} // Passa o objeto médico (ou undefined/null)
-        onSave={handleSave}
-        onCancel={handleCancel}
-        navigation={navigation}
+    <View style={styles.container}>
+      <MedicoForm 
+        medicoInicial={medico} 
+        onSave={handleSave} 
+        navigation={navigation} 
       />
     </View>
   );
-};
+}
 
-export default CadastroEdicaoMedicoScreen;
+const styles = StyleSheet.create({
+  container: { 
+    flex: 1, 
+    padding: 16, 
+    backgroundColor: '#f5f5f5' 
+  }
+});
