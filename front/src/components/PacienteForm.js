@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, Alert, StyleSheet, ScrollView } from 'react-native';
 
 export default function PacienteForm({ pacienteInicial, onSave, navigation }) {
-  // Estados para os campos do formulário baseados no db_clinica
+  // estados para os campos do formulário baseados no db_clinica
   const [nome, setNome] = useState(pacienteInicial?.nome || '');
   const [cpf, setCpf] = useState(pacienteInicial?.cpf || '');
   const [dataNascimento, setDataNascimento] = useState(pacienteInicial?.dataNascimento || '');
