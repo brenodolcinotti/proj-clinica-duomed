@@ -3,6 +3,7 @@ import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 // Componente importado (BotaoMenu, de acordo com o princípio de componentes)
 import BotaoMenu from '../../components/BotaoMenu'; 
+import { limparToken } from '../../services/sessao';
 
 const Logo = require('../../../assets/logo.png')
 
@@ -11,6 +12,13 @@ const IconePaciente = require('../../../assets/utilizador.png')
 const IconeConsulta = require('../../../assets/calendario.png')
 
 const MenuScreen = ({ navigation }) => {
+  const handleLogout = async () => {
+    await limparToken();
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Login' }]
+    });
+  };
   return (
     <View style={styles.container}>
       
@@ -36,6 +44,13 @@ const MenuScreen = ({ navigation }) => {
           titulo="Consultas" 
           onPress={() => navigation.navigate('Consultas')}
         />
+
+        <TouchableOpacity 
+          onPress={handleLogout} 
+          style={{ backgroundColor: '#DC3545', padding: 15, borderRadius: 8, marginTop: 20, width: '100%', alignItems: 'center' }}
+        >
+          <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}>Sair</Text>
+        </TouchableOpacity>
       </View>
       {/* A criação de interfaces gráficas da aplicação mobile baseadas em UX é uma capacidade técnica abordada [1] */}
     </View>
