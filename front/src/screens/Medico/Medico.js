@@ -1,27 +1,27 @@
 import React, { useState, useCallback } from 'react';
 import { View, Text, ActivityIndicator, Alert, Button, SectionList, StyleSheet, TouchableOpacity } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-
-// IMPORTANTE: Se for testar no celular físico via Expo Go, 
-// troque "localhost" pelo IP da máquina que está rodando o json-server.
-const BASE_URL = 'http://SEU_IP_AQUI:3000'; 
+import { api } from '../../services/api'; // Importando o cliente HTTP único da Aula 4
 
 export default function Medico({ navigation }) {
   const [medicos, setMedicos] = useState([]);
   const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState(null);
 
-  // Busca os dados na API via GET /medicos
+  // Busca os dados na API usando o atalho 'get' centralizado
   const buscarMedicos = async () => {
     setCarregando(true);
     setErro(null);
     try {
-      const resposta = await fetch(`${BASE_URL}/medicos`);
-      if (!resposta.ok) throw new Error('Erro ao carregar os dados da API');
-      const dados = await resposta.json();
+      const dados = await api.get('/medicos'); // Fetch e BASE_URL foram removidos
       setMedicos(dados);
     } catch (error) {
-      setErro(error.message);
+      if (error.name === 'SessaoExpirada') {
+        Alert.alert('Aviso', error.message);
+        navigation.reset({ index: 0, routes: [{ name: 'Login' }] }); // Redireciona para o Login em caso de 401
+      } else {
+        setErro(error.message);
+      }
     } finally {
       setCarregando(false);
     }
@@ -34,7 +34,7 @@ export default function Medico({ navigation }) {
     }, [])
   );
 
-  // Substitui o antigo botão "Desativar Perfil" por "Excluir" com confirmação
+  // Confirmação antes de excluir
   const confirmarExclusao = (id) => {
     Alert.alert('Excluir', 'Tem certeza que deseja excluir este médico?', [
       { text: 'Cancelar', style: 'cancel' },
@@ -42,18 +42,21 @@ export default function Medico({ navigation }) {
     ]);
   };
 
-  // Exclui o médico de verdade usando DELETE e recarrega a lista
+  // Exclui o médico usando o atalho 'remover' e recarrega a lista
   const excluirMedico = async (id) => {
     try {
-      const resposta = await fetch(`${BASE_URL}/medicos/${id}`, { method: 'DELETE' });
-      if (!resposta.ok) throw new Error('Erro ao excluir na API');
+      await api.remover(`/medicos/${id}`); // Fetch e BASE_URL foram removidos
       buscarMedicos(); 
     } catch (error) {
-      Alert.alert('Erro', error.message);
+      if (error.name === 'SessaoExpirada') {
+        navigation.reset({ index: 0, routes: [{ name: 'Login' }] }); // Redireciona para o Login em caso de 401
+      } else {
+        Alert.alert('Erro', error.message);
+      }
     }
   };
 
-  // Lógica de agrupamento por letra para a SectionList
+  // Lógica de agrupamento por letra para a SectionList (Mantida intacta)
   const medicosAgrupados = medicos.reduce((acc, medico) => {
     const letraInicial = medico.nome.charAt(0).toUpperCase();
     const secaoIndex = acc.findIndex(secao => secao.title === letraInicial);
@@ -65,7 +68,7 @@ export default function Medico({ navigation }) {
     return acc;
   }, []);
 
-  // Ordena as seções da lista em ordem alfabética
+  // Ordena as seções da lista em ordem alfabética (Mantida intacta)
   medicosAgrupados.sort((a, b) => a.title.localeCompare(b.title));
 
   if (carregando) {
@@ -104,7 +107,6 @@ export default function Medico({ navigation }) {
             <View style={styles.botoesContainer}>
               <TouchableOpacity 
                 style={styles.botaoEditar}
-                // Ajuste o nome da rota se o seu arquivo de navegação usar um nome diferente
                 onPress={() => navigation.navigate('CadastroEdicaoMedicoScreen', { medico: item })}
               >
                 <Text style={styles.textoBotao}>Editar</Text>
