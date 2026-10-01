@@ -1,6 +1,12 @@
 // src/screens/MenuScreen.js
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity
+} from 'react-native';
 // Componente importado (BotaoMenu, de acordo com o princípio de componentes)
 import BotaoMenu from '../../components/BotaoMenu'; 
 import { limparToken } from '../../services/sessao';
