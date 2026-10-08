@@ -1,6 +1,6 @@
 import { obterToken } from './sessao';
 
-const BASE_URL = 'http://10.110.12.82:3000';
+const BASE_URL = 'http://10.110.12.76:3000';
 
 async function requisicao(endpoint, opcoes = {}) {
   const token = await obterToken();

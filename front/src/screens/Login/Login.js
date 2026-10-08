@@ -1,27 +1,29 @@
 import React, { useEffect, useState } from 'react';
+
 import {
   View,
   Text,
   TextInput,
   Button,
   Alert,
-  StyleSheet
+  StyleSheet,
 } from 'react-native';
 
 import * as LocalAuthentication from 'expo-local-authentication';
 
 import {
   salvarToken,
-  obterToken
+  obterToken,
+  salvarPreferenciaBiometria,
+  obterPreferenciaBiometria,
 } from '../../services/sessao';
 
 export default function Login({ navigation }) {
-
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
-
   const [temBiometria, setTemBiometria] = useState(false);
-  const [verificandoBiometria, setVerificandoBiometria] = useState(true);
+  const [verificandoBiometria, setVerificandoBiometria] =
+    useState(true);
 
   useEffect(() => {
     verificarBiometria();
@@ -29,31 +31,20 @@ export default function Login({ navigation }) {
 
   const verificarBiometria = async () => {
     try {
-      const token = await obterToken();
+      const preferenciaBiometria =
+        await obterPreferenciaBiometria();
 
-      // Sem token, não oferecemos login por biometria.
-      if (!token) {
-        setTemBiometria(false);
-        return;
-      }
-
-      const temHardware = await LocalAuthentication.hasHardwareAsync();
-
-      if (!temHardware) {
-        setTemBiometria(false);
-        return;
-      }
+      const temHardware =
+        await LocalAuthentication.hasHardwareAsync();
 
       const biometriaCadastrada =
         await LocalAuthentication.isEnrolledAsync();
 
-      if (!biometriaCadastrada) {
-        setTemBiometria(false);
-        return;
-      }
-
-      setTemBiometria(true);
-
+      setTemBiometria(
+        preferenciaBiometria &&
+          temHardware &&
+          biometriaCadastrada
+      );
     } catch (error) {
       console.log('Erro ao verificar biometria:', error);
       setTemBiometria(false);
@@ -63,7 +54,7 @@ export default function Login({ navigation }) {
   };
 
   const entrarComSenha = async () => {
-    if (!email || !senha) {
+    if (!email.trim() || !senha) {
       Alert.alert(
         'Atenção',
         'Informe o e-mail e a senha.'
@@ -72,20 +63,35 @@ export default function Login({ navigation }) {
     }
 
     try {
-      // Sessão local para o projeto.
-      // A autenticação real poderá ser ligada à API posteriormente.
+      // Sessão local de demonstração do projeto.
+      // A autenticação real deverá ser validada pela API.
       const token = `duomed_${Date.now()}`;
 
       await salvarToken(token);
 
+      const temHardware =
+        await LocalAuthentication.hasHardwareAsync();
+
+      const biometriaCadastrada =
+        await LocalAuthentication.isEnrolledAsync();
+
+      if (temHardware && biometriaCadastrada) {
+        await salvarPreferenciaBiometria();
+      }
+
       Alert.alert(
         'Login realizado',
-        'Você entrou no DuoMed.'
+        'Você entrou no DuoMed.',
+        [
+          {
+            text: 'OK',
+            onPress: () => navigation.replace('Menu'),
+          },
+        ]
       );
-
-      navigation.replace('Menu');
-
     } catch (error) {
+      console.log('Erro ao realizar login:', error);
+
       Alert.alert(
         'Erro',
         'Não foi possível realizar o login.'
@@ -95,39 +101,37 @@ export default function Login({ navigation }) {
 
   const entrarComBiometria = async () => {
     try {
-      const token = await obterToken();
-
-      if (!token) {
-        Alert.alert(
-          'Sessão não encontrada',
-          'Entre primeiro usando e-mail e senha.'
-        );
-        return;
-      }
-
       const resultado =
         await LocalAuthentication.authenticateAsync({
           promptMessage: 'Desbloquear DuoMed',
           cancelLabel: 'Cancelar',
-          fallbackLabel: 'Usar senha'
+          fallbackLabel: 'Usar senha',
         });
 
-      if (resultado.success) {
-        navigation.replace('Menu');
+      if (!resultado.success) {
+        if (resultado.error !== 'user_cancel') {
+          Alert.alert(
+            'Biometria',
+            'Não foi possível confirmar sua biometria.'
+          );
+        }
         return;
       }
 
-      // Cancelamento não é tratado como erro.
-      if (resultado.error === 'user_cancel') {
+      const token = await obterToken();
+
+      if (!token) {
+        Alert.alert(
+          'Sessão encerrada',
+          'Sua biometria foi confirmada, mas sua sessão terminou. Entre com e-mail e senha para iniciar uma nova sessão.'
+        );
         return;
       }
 
-      Alert.alert(
-        'Biometria',
-        'Não foi possível confirmar sua biometria.'
-      );
-
+      navigation.replace('Menu');
     } catch (error) {
+      console.log('Erro no login biométrico:', error);
+
       Alert.alert(
         'Erro',
         'Não foi possível utilizar a biometria.'
@@ -137,18 +141,13 @@ export default function Login({ navigation }) {
 
   return (
     <View style={styles.container}>
-
-      <Text style={styles.titulo}>
-        DuoMed
-      </Text>
+      <Text style={styles.titulo}>DuoMed</Text>
 
       <Text style={styles.subtitulo}>
         Acesse sua conta
       </Text>
 
-      <Text style={styles.label}>
-        E-mail
-      </Text>
+      <Text style={styles.label}>E-mail</Text>
 
       <TextInput
         style={styles.input}
@@ -157,11 +156,10 @@ export default function Login({ navigation }) {
         placeholder="Digite seu e-mail"
         keyboardType="email-address"
         autoCapitalize="none"
+        autoCorrect={false}
       />
 
-      <Text style={styles.label}>
-        Senha
-      </Text>
+      <Text style={styles.label}>Senha</Text>
 
       <TextInput
         style={styles.input}
@@ -186,7 +184,6 @@ export default function Login({ navigation }) {
           />
         </View>
       )}
-
     </View>
   );
 }
@@ -196,27 +193,27 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 24,
     justifyContent: 'center',
-    backgroundColor: '#f5f5f5'
+    backgroundColor: '#f5f5f5',
   },
 
   titulo: {
     fontSize: 32,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 8
+    marginBottom: 8,
   },
 
   subtitulo: {
     fontSize: 18,
     textAlign: 'center',
-    marginBottom: 30
+    marginBottom: 30,
   },
 
   label: {
     fontSize: 15,
     fontWeight: 'bold',
     marginBottom: 5,
-    marginTop: 10
+    marginTop: 10,
   },
 
   input: {
@@ -225,10 +222,10 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderRadius: 5,
     padding: 12,
-    fontSize: 16
+    fontSize: 16,
   },
 
   botao: {
-    marginTop: 20
-  }
+    marginTop: 20,
+  },
 });

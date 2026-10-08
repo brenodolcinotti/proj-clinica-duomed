@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 import {
@@ -10,7 +11,6 @@ import {
 } from 'react-native';
 
 import BotaoMenu from '../../components/BotaoMenu';
-import { limparToken } from '../../services/sessao';
 
 const Logo = require('../../../assets/logo.png');
 const IconeMedic = require('../../../assets/usuario-md.png');
@@ -18,9 +18,7 @@ const IconePaciente = require('../../../assets/utilizador.png');
 const IconeConsulta = require('../../../assets/calendario.png');
 
 const MenuScreen = ({ navigation }) => {
-  const handleLogout = async () => {
-    await limparToken();
-
+  const handleLogout = () => {
     navigation.reset({
       index: 0,
       routes: [{ name: 'Login' }],
@@ -69,7 +67,7 @@ const MenuScreen = ({ navigation }) => {
           style={styles.botaoMapa}
         >
           <Text style={styles.textoMapa}>
-            🗺️  Mapa da Clínica
+            🗺️ Mapa da Clínica
           </Text>
         </TouchableOpacity>
 
