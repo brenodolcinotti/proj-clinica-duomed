@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 import {
@@ -59,8 +58,17 @@ const MenuScreen = ({ navigation }) => {
         <BotaoMenu
           icone={IconeConsulta}
           titulo="Consultas"
-          onPress={() => navigation.push('Consultas')}
+          onPress={() => navigation.navigate('Consultas')}
         />
+
+        <TouchableOpacity
+          onPress={() => navigation.navigate('SinaisVitais')}
+          style={styles.botaoSinaisVitais}
+        >
+          <Text style={styles.textoSinaisVitais}>
+            ❤️ Importar Sinais Vitais
+          </Text>
+        </TouchableOpacity>
 
         <TouchableOpacity
           onPress={() => navigation.navigate('Mapa')}
@@ -87,7 +95,7 @@ const MenuScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF',
   },
 
   conteudo: {
@@ -117,6 +125,21 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 
+  botaoSinaisVitais: {
+    backgroundColor: '#198754',
+    padding: 15,
+    borderRadius: 8,
+    marginTop: 10,
+    width: '100%',
+    alignItems: 'center',
+  },
+
+  textoSinaisVitais: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+
   botaoMapa: {
     backgroundColor: '#007BFF',
     padding: 15,
@@ -127,7 +150,7 @@ const styles = StyleSheet.create({
   },
 
   textoMapa: {
-    color: '#fff',
+    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -142,7 +165,7 @@ const styles = StyleSheet.create({
   },
 
   textoSair: {
-    color: '#fff',
+    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
   },

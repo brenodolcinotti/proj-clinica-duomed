@@ -160,5 +160,53 @@
       "status": "Agendada"
     }
   ],
+  "sinaisVitais": [
+    {
+      "frequenciaCardiaca": 75,
+      "observacao": "",
+      "origem": "manual",
+      "dataHora": "2026-10-09T00:07:47.896Z",
+      "id": "Yxf3qJSEnw0"
+    },
+    {
+      "frequenciaCardiaca": 83,
+      "quantidadeLeituras": 7,
+      "origem": "bluetooth",
+      "dispositivo": "Oxímetro DuoMed 1",
+      "dataHora": "2026-10-09T00:13:47.172Z",
+      "id": "enZ0jbsq1E4"
+    },
+    {
+      "frequenciaCardiaca": 82,
+      "quantidadeLeituras": 16,
+      "origem": "bluetooth",
+      "dispositivo": "Oxímetro DuoMed 1",
+      "dataHora": "2026-10-09T00:14:00.425Z",
+      "id": "QXE8Kto9fN8"
+    },
+    {
+      "frequenciaCardiaca": 84,
+      "quantidadeLeituras": 21,
+      "origem": "bluetooth",
+      "dispositivo": "Oxímetro DuoMed 1",
+      "dataHora": "2026-10-09T00:14:08.689Z",
+      "id": "-jHys6P9qFo"
+    },
+    {
+      "frequenciaCardiaca": 77,
+      "quantidadeLeituras": 2,
+      "origem": "bluetooth",
+      "dispositivo": "Monitor Cardíaco 2",
+      "dataHora": "2026-10-09T00:14:20.057Z",
+      "id": "yNcHXF9W01M"
+    },
+    {
+      "frequenciaCardiaca": 75,
+      "observacao": "",
+      "origem": "manual",
+      "dataHora": "2026-10-09T00:14:32.231Z",
+      "id": "owYZP7wEfLg"
+    }
+  ],
   "$schema": "./node_modules/json-server/schema.json"
 }

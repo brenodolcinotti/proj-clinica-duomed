@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
@@ -16,13 +17,15 @@ import CadastroEdicaoMedicoScreen from './src/screens/Medico/CadastroEdicaoMedic
 import Paciente from './src/screens/Paciente/Paciente';
 import CadastroEdicaoPacienteScreen from './src/screens/Paciente/CadastroEdicaoPacienteScreen';
 
+import SinaisVitais from './src/screens/SinaisVitais/SinaisVitais';
+import SinaisVitaisManual from './src/screens/SinaisVitais/SinaisVitaisManual';
+
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
-
         <Stack.Screen
           name="Login"
           component={Login}
@@ -77,6 +80,17 @@ export default function App() {
           options={{ title: 'Cadastro de Paciente' }}
         />
 
+        <Stack.Screen
+          name="SinaisVitais"
+          component={SinaisVitais}
+          options={{ title: 'Importação de Sinais Vitais' }}
+        />
+
+        <Stack.Screen
+          name="SinaisVitaisManual"
+          component={SinaisVitaisManual}
+          options={{ title: 'Digitação Manual de Sinais Vitais' }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
