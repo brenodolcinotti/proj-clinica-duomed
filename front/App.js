@@ -1,24 +1,24 @@
-import React from 'react';
 
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import Login from './src/screens/Login/Login';
 import MenuScreen from './src/screens/Menu/MenuScreen';
-
 import Consulta from './src/screens/Consulta/Consulta';
 import CadastroEdicaoConsultaScreen from './src/screens/Consulta/CadastroEdicaoConsultaScreen';
-
 import MapaScreen from './src/screens/Mapa/MapaScreen';
-
 import Medico from './src/screens/Medico/Medico';
 import CadastroEdicaoMedicoScreen from './src/screens/Medico/CadastroEdicaoMedicoScreen';
-
 import Paciente from './src/screens/Paciente/Paciente';
 import CadastroEdicaoPacienteScreen from './src/screens/Paciente/CadastroEdicaoPacienteScreen';
-
 import SinaisVitais from './src/screens/SinaisVitais/SinaisVitais';
 import SinaisVitaisManual from './src/screens/SinaisVitais/SinaisVitaisManual';
+
+import { configurarHandler } from './src/services/lembretes';
+
+// Configura a exibição das notificações.
+configurarHandler();
 
 const Stack = createStackNavigator();
 
@@ -95,3 +95,4 @@ export default function App() {
     </NavigationContainer>
   );
 }
+
