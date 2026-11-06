@@ -61,6 +61,12 @@ const MenuScreen = ({ navigation }) => {
           onPress={() => navigation.navigate('Consultas')}
         />
 
+        <BotaoMenu
+          icone={IconeConsulta}
+          titulo="Sincronizar agenda"
+          onPress={() => navigation.navigate('SincronizarAgenda')}
+        />
+
         <TouchableOpacity
           onPress={() => navigation.navigate('SinaisVitais')}
           style={styles.botaoSinaisVitais}
