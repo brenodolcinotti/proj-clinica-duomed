@@ -32,7 +32,7 @@ async function requisicao(endpoint, opcoes = {}) {
 }
 
 const api = {
-  get: (endpoint) => requisicao(endpoint),
+  get: (endpoint, opcoes = {}) => requisicao(endpoint, opcoes),
 
   post: (endpoint, dados) =>
     requisicao(endpoint, {

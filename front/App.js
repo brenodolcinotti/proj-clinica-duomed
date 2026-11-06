@@ -15,6 +15,10 @@ import CadastroEdicaoPacienteScreen from './src/screens/Paciente/CadastroEdicaoP
 import SinaisVitais from './src/screens/SinaisVitais/SinaisVitais';
 import SinaisVitaisManual from './src/screens/SinaisVitais/SinaisVitaisManual';
 import SincronizarAgenda from './src/screens/Agenda/SincronizarAgenda';
+import HistoricoSincronizacoes from './src/screens/Agenda/HistoricoSincronizacoes';
+
+// Import obrigatório: defineTask precisa ser registrado no escopo do módulo.
+import './src/services/tarefaBackground';
 
 import { configurarHandler } from './src/services/lembretes';
 
@@ -91,6 +95,12 @@ export default function App() {
           name="SincronizarAgenda"
           component={SincronizarAgenda}
           options={{ title: 'Sincronizar Agenda' }}
+        />
+
+        <Stack.Screen
+          name="HistoricoSincronizacoes"
+          component={HistoricoSincronizacoes}
+          options={{ title: 'Histórico e Background' }}
         />
 
         <Stack.Screen

@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import BotaoMenu from '../../components/BotaoMenu';
+import useSincronizacao from '../../hooks/useSincronizacao';
 
 const Logo = require('../../../assets/logo.png');
 const IconeMedic = require('../../../assets/usuario-md.png');
@@ -17,6 +18,9 @@ const IconePaciente = require('../../../assets/utilizador.png');
 const IconeConsulta = require('../../../assets/calendario.png');
 
 const MenuScreen = ({ navigation }) => {
+  // Mantém o listener de retorno ao app ativo durante a navegação autenticada.
+  useSincronizacao({ intervaloMinutos: 30, habilitado: true });
+
   const handleLogout = () => {
     navigation.reset({
       index: 0,
@@ -65,6 +69,12 @@ const MenuScreen = ({ navigation }) => {
           icone={IconeConsulta}
           titulo="Sincronizar agenda"
           onPress={() => navigation.navigate('SincronizarAgenda')}
+        />
+
+        <BotaoMenu
+          icone={IconeConsulta}
+          titulo="Histórico e tarefas em background"
+          onPress={() => navigation.navigate('HistoricoSincronizacoes')}
         />
 
         <TouchableOpacity
