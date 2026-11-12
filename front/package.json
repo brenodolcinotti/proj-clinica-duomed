@@ -8,48 +8,33 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "test:processamento": "node scripts/teste-processamento.js",
-    "test:sincronizacao": "node scripts/teste-sincronizacao.js"
+    "test:sincronizacao": "node scripts/teste-sincronizacao.js",
+    "test:mapas": "node scripts/teste-mapas.js",
+    "test:sms": "node scripts/teste-sms.js",
+    "test:bluetooth": "node scripts/teste-bluetooth.js"
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "2.2.0",
     "@react-native-picker/picker": "2.11.4",
-<<<<<<< HEAD
-    "@react-navigation/native": "^7.5.1",
-    "@react-navigation/stack": "^7.12.1",
-    "expo": "~58.0.0",
-    "expo-image-picker": "~58.0.10",
-    "expo-local-authentication": "~58.0.3",
-    "expo-notifications": "~58.1.9",
-    "expo-secure-store": "~58.0.3",
-    "expo-status-bar": "~58.0.5",
-    "react": "19.3.0",
-    "react-dom": "19.3.0",
-    "react-native": "0.88.1",
-    "react-native-gesture-handler": "~3.3.0",
-    "react-native-maps": "1.29.11",
-    "react-native-safe-area-context": "~5.11.1",
-    "react-native-screens": "~4.30.1",
-    "react-native-web": "^0.21.4"
-=======
     "@react-navigation/native": "^7.1.18",
     "@react-navigation/stack": "^7.4.9",
     "expo": "~57.0.24",
-    "expo-background-task": "~57.0.22",
     "expo-image-picker": "~57.0.20",
     "expo-local-authentication": "~57.0.3",
-    "expo-location": "~57.0.23",
     "expo-notifications": "~57.0.22",
     "expo-secure-store": "~57.0.4",
     "expo-status-bar": "~57.0.1",
-    "expo-task-manager": "~57.0.22",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-native": "0.86.3",
     "react-native-gesture-handler": "~2.32.0",
     "react-native-maps": "1.27.2",
     "react-native-web": "^0.21.0",
-    "react-navigation": "^5.0.0"
->>>>>>> d830235498595667d17c673374c4efb0a936a537
+    "react-navigation": "^5.0.0",
+    "@react-native-async-storage/async-storage": "2.2.0",
+    "expo-background-task": "~57.0.22",
+    "expo-task-manager": "~57.0.22",
+    "expo-location": "~57.0.23",
+    "expo-sms": "~57.0.2"
   },
   "private": true,
   "devDependencies": {

@@ -12,6 +12,7 @@ import {
 
 import { useFocusEffect } from '@react-navigation/native';
 import { api } from '../../services/api';
+import { cancelarLembrete } from '../../services/lembretes';
 
 export default function Consulta({ navigation }) {
   const [consultas, setConsultas] = useState([]);
@@ -105,6 +106,55 @@ export default function Consulta({ navigation }) {
     }
   };
 
+  const solicitarCancelamento = (consulta) => {
+    Alert.alert(
+      'Cancelar consulta',
+      'Deseja cancelar esta consulta? O lembrete local também será removido.',
+      [
+        { text: 'Manter consulta', style: 'cancel' },
+        {
+          text: 'Cancelar consulta',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              const atualizada = { ...consulta, status: 'Cancelada' };
+              await api.put(`/consultas/${consulta.id}`, atualizada);
+              await cancelarLembrete(consulta.id);
+              await buscarDados();
+              Alert.alert(
+                'Consulta cancelada',
+                'Deseja avisar o paciente por SMS?',
+                [
+                  { text: 'Agora não', style: 'cancel' },
+                  {
+                    text: 'Enviar SMS',
+                    onPress: () => navigation.navigate('EnviarSms', {
+                      consulta: atualizada,
+                      tipo: 'cancelamento',
+                    }),
+                  },
+                ]
+              );
+            } catch (error) {
+              if (error.name === 'SessaoExpirada') {
+                navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
+              } else {
+                Alert.alert('Erro', error.message || 'Não foi possível cancelar a consulta.');
+              }
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const abrirEnvioSms = (consulta) => {
+    navigation.navigate('EnviarSms', {
+      consulta,
+      tipo: consulta.status === 'Cancelada' ? 'cancelamento' : 'confirmacao',
+    });
+  };
+
   if (carregando) {
     return (
       <View style={styles.center}>
@@ -167,6 +217,26 @@ export default function Consulta({ navigation }) {
               >
                 <Text style={styles.txtBtn}>Editar</Text>
               </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.btnSms}
+                onPress={() => abrirEnvioSms(item)}
+                accessibilityRole="button"
+                accessibilityLabel={`Avisar ${encontrarPaciente(item.pacienteId)} por SMS`}
+              >
+                <Text style={styles.txtBtn}>SMS</Text>
+              </TouchableOpacity>
+
+              {item.status === 'Agendada' ? (
+                <TouchableOpacity
+                  style={styles.btnCancelarConsulta}
+                  onPress={() => solicitarCancelamento(item)}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Cancelar consulta de ${encontrarPaciente(item.pacienteId)}`}
+                >
+                  <Text style={styles.txtBtn}>Cancelar</Text>
+                </TouchableOpacity>
+              ) : null}
 
               <TouchableOpacity
                 style={styles.btnExcluir}
@@ -240,8 +310,11 @@ const styles = StyleSheet.create({
 
   botoes: {
     flexDirection: 'row',
-    gap: 10,
+    flexWrap: 'wrap',
+    gap: 6,
     alignItems: 'center',
+    justifyContent: 'flex-end',
+    maxWidth: 148,
   },
 
   btnEditar: {
@@ -254,7 +327,18 @@ const styles = StyleSheet.create({
     backgroundColor: '#DC3545',
     padding: 8,
     borderRadius: 5,
-    marginLeft: 5,
+  },
+
+  btnSms: {
+    backgroundColor: '#198754',
+    padding: 8,
+    borderRadius: 5,
+  },
+
+  btnCancelarConsulta: {
+    backgroundColor: '#B54708',
+    padding: 8,
+    borderRadius: 5,
   },
 
   txtBtn: {

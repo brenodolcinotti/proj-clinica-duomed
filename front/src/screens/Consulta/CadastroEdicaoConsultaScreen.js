@@ -222,18 +222,40 @@ export default function CadastroEdicaoConsultaScreen({
         );
       }
 
-      Alert.alert(
-        'Sucesso',
-        consulta
-          ? 'Consulta atualizada com sucesso!'
-          : 'Consulta cadastrada com sucesso!',
-        [
-          {
-            text: 'OK',
-            onPress: () => navigation.goBack(),
-          },
-        ]
-      );
+      const novaConfirmacao = !consulta && status === 'Agendada';
+      const novoCancelamento = Boolean(consulta)
+        && consulta.status !== 'Cancelada'
+        && status === 'Cancelada';
+      const tipoSms = novaConfirmacao
+        ? 'confirmacao'
+        : novoCancelamento
+          ? 'cancelamento'
+          : null;
+
+      if (tipoSms) {
+        Alert.alert(
+          'Consulta salva',
+          tipoSms === 'cancelamento'
+            ? 'A consulta foi cancelada e o lembrete local foi removido. Deseja avisar o paciente por SMS?'
+            : 'A consulta foi cadastrada. Deseja enviar uma confirmação por SMS?',
+          [
+            { text: 'Agora não', style: 'cancel', onPress: () => navigation.goBack() },
+            {
+              text: 'Enviar SMS',
+              onPress: () => navigation.replace('EnviarSms', {
+                consulta: consultaSalva,
+                tipo: tipoSms,
+              }),
+            },
+          ]
+        );
+      } else {
+        Alert.alert(
+          'Sucesso',
+          consulta ? 'Consulta atualizada com sucesso!' : 'Consulta cadastrada com sucesso!',
+          [{ text: 'OK', onPress: () => navigation.goBack() }]
+        );
+      }
     } catch (error) {
       if (error.name === 'SessaoExpirada') {
         navigation.reset({

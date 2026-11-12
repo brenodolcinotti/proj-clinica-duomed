@@ -7,7 +7,8 @@ import Login from './src/screens/Login/Login';
 import MenuScreen from './src/screens/Menu/MenuScreen';
 import Consulta from './src/screens/Consulta/Consulta';
 import CadastroEdicaoConsultaScreen from './src/screens/Consulta/CadastroEdicaoConsultaScreen';
-import MapaScreen from './src/screens/Mapa/MapaScreen';
+import EnviarSms from './src/screens/Consulta/EnviarSms';
+import MapaClinica from './src/screens/Clinica/MapaClinica';
 import Medico from './src/screens/Medico/Medico';
 import CadastroEdicaoMedicoScreen from './src/screens/Medico/CadastroEdicaoMedicoScreen';
 import Paciente from './src/screens/Paciente/Paciente';
@@ -45,8 +46,8 @@ export default function App() {
 
         <Stack.Screen
           name="Mapa"
-          component={MapaScreen}
-          options={{ title: 'Mapa da Clínica' }}
+          component={MapaClinica}
+          options={{ title: 'Mapa e Como Chegar' }}
         />
 
         <Stack.Screen
@@ -59,6 +60,12 @@ export default function App() {
           name="CadastroEdicaoConsultaScreen"
           component={CadastroEdicaoConsultaScreen}
           options={{ title: 'Cadastro de Consulta' }}
+        />
+
+        <Stack.Screen
+          name="EnviarSms"
+          component={EnviarSms}
+          options={{ title: 'Avisar paciente por SMS' }}
         />
 
         <Stack.Screen
