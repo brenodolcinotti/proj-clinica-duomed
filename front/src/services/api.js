@@ -1,6 +1,9 @@
+
 import { obterToken } from './sessao';
 
-export const BASE_URL = 'http://10.110.12.28:3000';
+// IP atual do computador pessoal.
+// O celular e o computador precisam estar na mesma rede Wi-Fi.
+export const BASE_URL = 'http://10.0.0.210:3000';
 
 async function requisicao(endpoint, opcoes = {}) {
   const token = await obterToken();
