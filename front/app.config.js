@@ -2,7 +2,7 @@
 /**
  * Configuração dinâmica do Expo — DuoMed.
  *
- * Configuração migrada do app.json para este arquivo.
+ * Configuração migrada do app.json.
  *
  * A chave do Google Maps é opcional.
  * Nunca coloque chaves secretas diretamente neste arquivo.
@@ -43,6 +43,7 @@ const config = {
   plugins: [
     'expo-status-bar',
     'expo-secure-store',
+    'expo-background-task',
     [
       'expo-location',
       {
