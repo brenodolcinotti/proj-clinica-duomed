@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from 'react';
 import {
   View,
@@ -21,9 +22,11 @@ export default function Consulta({ navigation }) {
   const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState(null);
 
-  const buscarDados = async () => {
-    setCarregando(true);
-    setErro(null);
+  const buscarDados = useCallback(async (podeAtualizar = () => true) => {
+    if (podeAtualizar()) {
+      setCarregando(true);
+      setErro(null);
+    }
 
     try {
       const [dadosConsultas, dadosPacientes, dadosMedicos] =
@@ -33,27 +36,41 @@ export default function Consulta({ navigation }) {
           api.get('/medicos'),
         ]);
 
+      if (!podeAtualizar()) return;
+
       setConsultas(dadosConsultas);
       setPacientes(dadosPacientes);
       setMedicos(dadosMedicos);
     } catch (error) {
+      if (!podeAtualizar()) return;
+
       if (error.name === 'SessaoExpirada') {
         navigation.reset({
           index: 0,
           routes: [{ name: 'Login' }],
         });
       } else {
-        setErro(error.message);
+        setErro(
+          error.message || 'Não foi possível carregar as consultas.'
+        );
       }
     } finally {
-      setCarregando(false);
+      if (podeAtualizar()) {
+        setCarregando(false);
+      }
     }
-  };
+  }, [navigation]);
 
   useFocusEffect(
     useCallback(() => {
-      buscarDados();
-    }, [])
+      let ativo = true;
+
+      buscarDados(() => ativo);
+
+      return () => {
+        ativo = false;
+      };
+    }, [buscarDados])
   );
 
   const encontrarPaciente = (id) => {
@@ -93,7 +110,7 @@ export default function Consulta({ navigation }) {
   const excluirConsulta = async (id) => {
     try {
       await api.remover(`/consultas/${id}`);
-      buscarDados();
+      await buscarDados();
     } catch (error) {
       if (error.name === 'SessaoExpirada') {
         navigation.reset({
@@ -111,35 +128,54 @@ export default function Consulta({ navigation }) {
       'Cancelar consulta',
       'Deseja cancelar esta consulta? O lembrete local também será removido.',
       [
-        { text: 'Manter consulta', style: 'cancel' },
+        {
+          text: 'Manter consulta',
+          style: 'cancel',
+        },
         {
           text: 'Cancelar consulta',
           style: 'destructive',
           onPress: async () => {
             try {
-              const atualizada = { ...consulta, status: 'Cancelada' };
+              const atualizada = {
+                ...consulta,
+                status: 'Cancelada',
+              };
+
               await api.put(`/consultas/${consulta.id}`, atualizada);
               await cancelarLembrete(consulta.id);
               await buscarDados();
+
               Alert.alert(
                 'Consulta cancelada',
                 'Deseja avisar o paciente por SMS?',
                 [
-                  { text: 'Agora não', style: 'cancel' },
+                  {
+                    text: 'Agora não',
+                    style: 'cancel',
+                  },
                   {
                     text: 'Enviar SMS',
-                    onPress: () => navigation.navigate('EnviarSms', {
-                      consulta: atualizada,
-                      tipo: 'cancelamento',
-                    }),
+                    onPress: () =>
+                      navigation.navigate('EnviarSms', {
+                        consulta: atualizada,
+                        tipo: 'cancelamento',
+                      }),
                   },
                 ]
               );
             } catch (error) {
               if (error.name === 'SessaoExpirada') {
-                navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: 'Login' }],
+                });
               } else {
-                Alert.alert('Erro', error.message || 'Não foi possível cancelar a consulta.');
+                Alert.alert(
+                  'Erro',
+                  error.message ||
+                    'Não foi possível cancelar a consulta.'
+                );
               }
             }
           },
@@ -151,13 +187,19 @@ export default function Consulta({ navigation }) {
   const abrirEnvioSms = (consulta) => {
     navigation.navigate('EnviarSms', {
       consulta,
-      tipo: consulta.status === 'Cancelada' ? 'cancelamento' : 'confirmacao',
+      tipo:
+        consulta.status === 'Cancelada'
+          ? 'cancelamento'
+          : 'confirmacao',
     });
   };
 
   if (carregando) {
     return (
-      <View style={styles.center}>
+      <View
+        style={styles.center}
+        testID="consulta-carregando"
+      >
         <ActivityIndicator size="large" />
         <Text>Carregando consultas...</Text>
       </View>
@@ -166,20 +208,33 @@ export default function Consulta({ navigation }) {
 
   if (erro) {
     return (
-      <View style={styles.center}>
-        <Text style={styles.erroText}>{erro}</Text>
+      <View
+        style={styles.center}
+        testID="consulta-erro"
+      >
+        <Text
+          style={styles.erroText}
+          testID="mensagem-erro-consultas"
+        >
+          {erro}
+        </Text>
 
         <Button
           title="Tentar novamente"
-          onPress={buscarDados}
+          testID="botao-tentar-novamente"
+          onPress={() => buscarDados()}
         />
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <View
+      style={styles.container}
+      testID="tela-consultas"
+    >
       <FlatList
+        testID="lista-consultas"
         data={consultas}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
@@ -210,9 +265,10 @@ export default function Consulta({ navigation }) {
               <TouchableOpacity
                 style={styles.btnEditar}
                 onPress={() =>
-                  navigation.navigate('CadastroEdicaoConsultaScreen', {
-                    consulta: item,
-                  })
+                  navigation.navigate(
+                    'CadastroEdicaoConsultaScreen',
+                    { consulta: item }
+                  )
                 }
               >
                 <Text style={styles.txtBtn}>Editar</Text>
@@ -256,6 +312,9 @@ export default function Consulta({ navigation }) {
 
       <TouchableOpacity
         style={styles.fab}
+        testID="botao-nova-consulta"
+        accessibilityRole="button"
+        accessibilityLabel="Nova consulta"
         onPress={() =>
           navigation.navigate('CadastroEdicaoConsultaScreen')
         }
@@ -276,6 +335,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 20,
   },
 
   itemContainer: {
@@ -350,6 +410,7 @@ const styles = StyleSheet.create({
     color: 'red',
     marginBottom: 10,
     fontSize: 16,
+    textAlign: 'center',
   },
 
   emptyText: {

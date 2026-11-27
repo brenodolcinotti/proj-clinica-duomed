@@ -140,16 +140,25 @@ export default function Login({ navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.titulo}>DuoMed</Text>
+    <View
+      testID="tela-login"
+      style={styles.container}
+    >
+      <Text style={styles.titulo}>
+        DuoMed
+      </Text>
 
       <Text style={styles.subtitulo}>
         Acesse sua conta
       </Text>
 
-      <Text style={styles.label}>E-mail</Text>
+      <Text style={styles.label}>
+        E-mail
+      </Text>
 
       <TextInput
+        testID="campo-email"
+        accessibilityLabel="E-mail"
         style={styles.input}
         value={email}
         onChangeText={setEmail}
@@ -159,9 +168,13 @@ export default function Login({ navigation }) {
         autoCorrect={false}
       />
 
-      <Text style={styles.label}>Senha</Text>
+      <Text style={styles.label}>
+        Senha
+      </Text>
 
       <TextInput
+        testID="campo-senha"
+        accessibilityLabel="Senha"
         style={styles.input}
         value={senha}
         onChangeText={setSenha}
@@ -171,6 +184,7 @@ export default function Login({ navigation }) {
 
       <View style={styles.botao}>
         <Button
+          testID="botao-entrar"
           title="Entrar com e-mail e senha"
           onPress={entrarComSenha}
         />
@@ -179,6 +193,7 @@ export default function Login({ navigation }) {
       {!verificandoBiometria && temBiometria && (
         <View style={styles.botao}>
           <Button
+            testID="botao-biometria"
             title="Entrar com biometria"
             onPress={entrarComBiometria}
           />
